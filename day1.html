@@ -3,203 +3,216 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Day 1 · Travel &amp; Grand World</title>
-<link rel="stylesheet" href="styles.css">
+<title>Day 1 · Travel & Grand World</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .hero { background-image: url('https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?q=80&w=2000&auto=format&fit=crop'); }
+</style>
 </head>
-<body data-day="day1">
+<body>
 
-<header>
-  <h1>Day 1 — Travel &amp; Grand World</h1>
-  <p>28 Nov 2026 · KLIA T2 → Phu Quoc → Grand World</p>
-</header>
-
-<nav class="day-nav">
-  <a href="index.html">🏠 Home</a>
-  <a href="day1.html" class="active">Day 1</a>
-  <a href="day2.html">Day 2</a>
-  <a href="day3.html">Day 3</a>
-  <a href="day4.html">Day 4</a>
-</nav>
-
-<div class="container">
-  <h2 class="day-title">Day 1 — Travel &amp; Grand World</h2>
-  <p class="day-subtitle">28 Nov 2026 · KLIA T2 → Phu Quoc → Grand World</p>
-  <span class="day-budget" id="day-budget">Day 1 total: RM 310</span>
-
-  <div class="timeline" id="timeline">
-    <!-- Stops injected by JS from default data -->
-  </div>
-
-  <div class="action-bar">
-    <button class="btn btn-add" onclick="addStop()">➕ Add Stop</button>
-    <button class="btn btn-print" onclick="window.print()">🖨️ Print / PDF</button>
-    <button class="btn btn-reset" onclick="resetDay()">↺ Reset to Default</button>
+<div class="hero">
+  <div class="hero-content">
+    <span class="hero-badge">Day 1 · 28 Nov 2026</span>
+    <h1>Travel & Grand World</h1>
+    <p>KLIA T2 → Phu Quoc → The Sol House</p>
   </div>
 </div>
 
-<div class="save-status" id="saveStatus">✓ Saved</div>
+<nav class="nav-container">
+  <div class="nav-bar">
+    <a href="index.html">Home</a>
+    <a href="day1.html" class="active">Day 1</a>
+    <a href="day2.html">Day 2</a>
+    <a href="day3.html">Day 3</a>
+    <a href="day4.html">Day 4</a>
+  </div>
+</nav>
 
-<footer>Phu Quoc 4D3N · Day 1</footer>
+<div class="container">
+  <div class="page-header">
+    <div class="page-title">
+      <h2>Day 1 Itinerary</h2>
+      <p>Click "Edit Mode" to make changes to your schedule</p>
+    </div>
+    <div class="budget-pill" id="dayBudget">💰 Total: RM 0.00</div>
+  </div>
+
+  <div class="timeline" id="timeline"></div>
+
+  <div class="action-bar">
+    <button class="btn btn-primary" id="editBtn" onclick="toggleEdit()">✏️ Enter Edit Mode</button>
+    <button class="btn btn-success" onclick="addStop()" id="addBtn" style="display:none;">➕ Add New Stop</button>
+    <button class="btn btn-outline" onclick="window.print()">🖨️ Print / PDF</button>
+    <button class="btn btn-warning" onclick="resetDay()">↺ Reset Defaults</button>
+  </div>
+
+  <div class="global-summary" id="globalSummary">
+    <h3>Total Trip Cost (4 Days)</h3>
+    <div class="total-amount" id="grandTotal">RM 0.00</div>
+    <p>Calculated from all days (Hotel & Flight excluded)</p>
+  </div>
+</div>
+
+<div class="toast" id="toast">✓ Saved Successfully</div>
 
 <script>
-const STORAGE_KEY = 'pq_day1_v1';
-
+const DAY_ID = 'day1';
 const DEFAULT_STOPS = [
-  {time:"10:30 – 11:30 AM", cost:"RM 75", title:"Rumah ke KLIA Terminal 2",
-   desc:"Keluar awal untuk elak kesesakan. Bawa snek & mainan kecil anak dalam beg sandang.",
-   commute:"🚗 Grab Car / KLIA Ekspres", tags:[]},
-  {time:"11:30 AM – 12:30 PM", cost:"Free", title:"Urusan di KLIA T2 (Self Check-In & Bag Drop)",
-   desc:"Gunakan kiosk layan diri untuk cetak pas masuk & tag beg. Hantar bagasi di kaunter Baggage Drop.",
-   commute:"🚶 Berjalan kaki", tags:[]},
-  {time:"12:30 – 1:45 PM", cost:"RM 50", title:"Makan Tengah Hari & Solat",
-   desc:"Makan di restoran halal di KLIA T2. Solat Jamak Takdim (Zohor & Asar).",
-   commute:"", tags:[{text:"🍽️ Halal", cls:"food"}]},
-  {time:"1:45 – 2:40 PM", cost:"Free", title:"Pintu Pelepasan (Boarding Gate)",
-   desc:"Masuk ke ruang pelepasan awal. Salin lampin anak sebelum naik pesawat.",
-   commute:"", tags:[]},
-  {time:"2:40 – 3:30 PM (VN)", cost:"Flight", title:"Penerbangan KUL → PQC (AirAsia AK547)",
-   desc:"Penerbangan ~1 jam 50 min. Anak boleh tidur sepanjang perjalanan.",
-   commute:"", tags:[{text:"✈️ AirAsia", cls:"transport"}]},
-  {time:"3:30 – 4:30 PM", cost:"Free", title:"Urusan Ketibaan di PQC",
-   desc:"Pemeriksaan pasport & pengambilan bagasi di Lapangan Terbang Phu Quoc.",
-   commute:"", tags:[]},
-  {time:"4:30 – 5:30 PM", cost:"RM 95", title:"PQC → The Sol House (Grand World)",
-   desc:"Pautkan kad kredit Malaysia pada aplikasi Grab sebelum mendarat. Chat hotel untuk tanya service airport transfer.",
-   commute:"🚗 Grab Car 4-Seater", tags:[]},
-  {time:"5:30 – 7:00 PM", cost:"Free", title:"Daftar Masuk The Sol House & Rehat Anak",
-   desc:"Mandikan anak dan berehat di bilik hotel.", commute:"", tags:[]},
-  {time:"7:30 – 8:00 PM", cost:"RM 60", title:"Venice Taxi",
-   desc:"Naik Venice taxi di Grand World.", commute:"🚤 Buggy / Walk", tags:[]},
-  {time:"7:00 – 11:30 PM", cost:"RM 30", title:"Meneroka Grand World & Makan Malam",
-   desc:"Bawa stroller dan pesan makanan halal. Makan di Halal Venice Restaurant.",
-   commute:"🚶 Berjalan kaki / Buggy Percuma",
-   tags:[{text:"🍽️ Halal Venice Restaurant", cls:"food"},{text:"🎡 Grand World", cls:""}]}
+  {time:"10:30 – 11:30 AM", cost:"RM 75", title:"Rumah ke KLIA Terminal 2", desc:"Keluar awal untuk elak kesesakan. Bawa snek & mainan kecil anak dalam beg sandang.", commute:"🚗 Grab Car / KLIA Ekspres", tags:[]},
+  {time:"11:30 AM – 12:30 PM", cost:"Free", title:"Urusan di KLIA T2 (Self Check-In & Bag Drop)", desc:"Gunakan kiosk layan diri untuk cetak pas masuk & tag beg. Hantar bagasi di kaunter Baggage Drop.", commute:"🚶 Berjalan kaki", tags:[]},
+  {time:"12:30 – 1:45 PM", cost:"RM 50", title:"Makan Tengah Hari & Solat", desc:"Makan di restoran halal di KLIA T2. Solat Jamak Takdim (Zohor & Asar).", commute:"", tags:[{text:"🍽️ Halal", cls:"food"}]},
+  {time:"1:45 – 2:40 PM", cost:"Free", title:"Pintu Pelepasan (Boarding Gate)", desc:"Masuk ke ruang pelepasan awal. Salin lampin anak sebelum naik pesawat.", commute:"", tags:[]},
+  {time:"2:40 – 3:30 PM (VN)", cost:"Flight", title:"Penerbangan KUL → PQC (AirAsia AK547)", desc:"Penerbangan ~1 jam 50 min. Anak boleh tidur sepanjang perjalanan.", commute:"", tags:[{text:"✈️ AirAsia", cls:"transport"}]},
+  {time:"3:30 – 4:30 PM", cost:"Free", title:"Urusan Ketibaan di PQC", desc:"Pemeriksaan pasport & pengambilan bagasi di Lapangan Terbang Phu Quoc.", commute:"", tags:[]},
+  {time:"4:30 – 5:30 PM", cost:"RM 95", title:"PQC → The Sol House (Grand World)", desc:"Pautkan kad kredit Malaysia pada aplikasi Grab sebelum mendarat. Chat hotel untuk tanya service airport transfer.", commute:"🚗 Grab Car 4-Seater", tags:[]},
+  {time:"5:30 – 7:00 PM", cost:"Free", title:"Daftar Masuk The Sol House & Rehat Anak", desc:"Mandikan anak dan berehat di bilik hotel.", commute:"", tags:[]},
+  {time:"7:30 – 8:00 PM", cost:"RM 60", title:"Venice Taxi", desc:"Naik Venice taxi di Grand World.", commute:"🚤 Buggy / Walk", tags:[]},
+  {time:"7:00 – 11:30 PM", cost:"RM 30", title:"Meneroka Grand World & Makan Malam", desc:"Bawa stroller dan pesan makanan halal. Makan di Halal Venice Restaurant.", commute:"🚶 Berjalan kaki / Buggy Percuma", tags:[{text:"🍽️ Halal Venice", cls:"food"},{text:"🎡 Grand World", cls:"activity"}]}
 ];
 
+const STORAGE_KEY = 'pq_' + DAY_ID;
 let stops = [];
+let isEditing = false;
 let saveTimer;
 
-function loadStops(){
-  try{
-    const saved = localStorage.getItem(STORAGE_KEY);
-    stops = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_STOPS));
-  }catch(e){ stops = JSON.parse(JSON.stringify(DEFAULT_STOPS)); }
+function init() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  stops = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_STOPS));
   render();
+  updateGlobalTotal();
 }
 
-function saveStops(showToast=true){
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(()=>{
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(stops));
-    if(showToast) showSaveStatus();
-  }, 400);
-}
-
-function showSaveStatus(){
-  const el = document.getElementById('saveStatus');
-  el.classList.add('show');
-  setTimeout(()=>el.classList.remove('show'), 1200);
-}
-
-function escapeHtml(s){
-  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-
-function render(){
+function render() {
   const tl = document.getElementById('timeline');
-  tl.innerHTML = stops.map((s,i)=>`
-    <div class="stop" data-idx="${i}">
-      <div class="stop-head">
-        <span class="stop-time" contenteditable="true" data-field="time" data-idx="${i}">${escapeHtml(s.time)}</span>
-        <span class="stop-cost" contenteditable="true" data-field="cost" data-idx="${i}">${escapeHtml(s.cost)}</span>
+  tl.innerHTML = stops.map((s, i) => `
+    <div class="stop-card">
+      <div class="stop-dot"></div>
+      <div class="stop-header">
+        <span class="stop-time" contenteditable="${isEditing}" data-i="${i}" data-f="time">${s.time}</span>
+        <span class="stop-cost" contenteditable="${isEditing}" data-i="${i}" data-f="cost">${s.cost}</span>
       </div>
-      <h3 contenteditable="true" data-field="title" data-idx="${i}">${escapeHtml(s.title)}</h3>
-      <p contenteditable="true" data-field="desc" data-idx="${i}">${escapeHtml(s.desc)}</p>
-      ${s.commute ? `<div class="commute" contenteditable="true" data-field="commute" data-idx="${i}">${escapeHtml(s.commute)}</div>` : `<div class="commute" contenteditable="true" data-field="commute" data-idx="${i}" style="opacity:.4">(add commute)</div>`}
-      <div class="tags">
-        ${s.tags.map((t,j)=>`<span class="tag ${t.cls}">${escapeHtml(t.text)}
-          <span style="cursor:pointer;margin-left:6px;opacity:.6" onclick="removeTag(${i},${j})">×</span>
-        </span>`).join('')}
-        <span class="tag" style="cursor:pointer;background:#f0f6f9;color:var(--muted)" onclick="addTag(${i})">+ tag</span>
+      <div class="stop-title" contenteditable="${isEditing}" data-i="${i}" data-f="title">${s.title}</div>
+      <div class="stop-desc" contenteditable="${isEditing}" data-i="${i}" data-f="desc">${s.desc}</div>
+      ${s.commute ? `<div class="commute-tag" contenteditable="${isEditing}" data-i="${i}" data-f="commute">${s.commute}</div>` : `<div class="commute-tag" contenteditable="${isEditing}" data-i="${i}" data-f="commute" style="opacity:0.5">(add commute)</div>`}
+      
+      <div class="tags-container">
+        ${s.tags.map((t, j) => `
+          <span class="tag ${t.cls || 'default'}">
+            ${t.text}
+            ${isEditing ? `<span style="cursor:pointer;margin-left:6px;color:red;" onclick="removeTag(${i},${j})">✕</span>` : ''}
+          </span>
+        `).join('')}
+        ${isEditing ? `<span class="tag default" style="cursor:pointer;" onclick="addTag(${i})">+ Add Tag</span>` : ''}
       </div>
+
       <div class="stop-tools">
-        <button class="tool-btn" onclick="moveStop(${i},-1)">↑ Up</button>
-        <button class="tool-btn" onclick="moveStop(${i},1)">↓ Down</button>
-        <button class="tool-btn" onclick="duplicateStop(${i})">⧉ Duplicate</button>
-        <button class="tool-btn del" onclick="deleteStop(${i})">🗑 Delete</button>
+        <button class="tool-btn" onclick="move(${i}, -1)">↑ Up</button>
+        <button class="tool-btn" onclick="move(${i}, 1)">↓ Down</button>
+        <button class="tool-btn" onclick="dupe(${i})">⧉ Duplicate</button>
+        <button class="tool-btn del" onclick="del(${i})">🗑 Delete</button>
       </div>
     </div>
   `).join('');
 
-  // attach input listeners
-  tl.querySelectorAll('[contenteditable]').forEach(el=>{
-    el.addEventListener('input', e=>{
-      const idx = +el.dataset.idx;
-      const field = el.dataset.field;
-      stops[idx][field] = el.innerText;
-      saveStops();
+  if (isEditing) {
+    document.querySelectorAll('[contenteditable="true"]').forEach(el => {
+      el.addEventListener('input', (e) => {
+        const i = +e.target.dataset.i;
+        const f = e.target.dataset.f;
+        stops[i][f] = e.target.innerText;
+        autoSave();
+        updateBudget();
+      });
     });
-  });
-
+  }
   updateBudget();
 }
 
-function updateBudget(){
-  // Simple sum of RM costs, ignoring "Free"/"Flight"/"Included"
+function updateBudget() {
   let total = 0;
-  stops.forEach(s=>{
-    const m = String(s.cost).match(/(\d+(?:\.\d+)?)/);
-    if(m) total += parseFloat(m[1]);
+  stops.forEach(s => {
+    const match = String(s.cost).replace(/,/g, '').match(/(\d+(?:\.\d+)?)/);
+    if (match) total += parseFloat(match[1]);
   });
-  document.getElementById('day-budget').innerText = 'Day total: RM ' + total.toFixed(2);
+  document.getElementById('dayBudget').innerHTML = `💰 Total: RM ${total.toFixed(2)}`;
+  localStorage.setItem(STORAGE_KEY + '_total', total);
+  updateGlobalTotal();
 }
 
-function addStop(){
-  stops.push({time:"New time", cost:"RM 0", title:"New stop", desc:"Description…", commute:"", tags:[]});
-  saveStops(); render();
-  // scroll to new stop
-  setTimeout(()=>{
-    const last = document.querySelector('.stop:last-child');
-    if(last){ last.scrollIntoView({behavior:'smooth',block:'center'}); }
-  },50);
+function updateGlobalTotal() {
+  let grand = 0;
+  ['day1','day2','day3','day4'].forEach(d => {
+    const val = parseFloat(localStorage.getItem('pq_' + d + '_total')) || 0;
+    grand += val;
+  });
+  const el = document.getElementById('grandTotal');
+  if(el) el.innerText = `RM ${grand.toFixed(2)}`;
 }
 
-function deleteStop(i){
-  if(!confirm('Delete this stop?')) return;
-  stops.splice(i,1); saveStops(); render();
+function autoSave() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(stops));
+    showToast();
+  }, 500);
 }
 
-function duplicateStop(i){
-  stops.splice(i+1,0, JSON.parse(JSON.stringify(stops[i])));
-  saveStops(); render();
+function showToast() {
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1500);
 }
 
-function moveStop(i,dir){
-  const ni = i+dir;
-  if(ni<0 || ni>=stops.length) return;
-  [stops[i],stops[ni]] = [stops[ni],stops[i]];
-  saveStops(); render();
+function toggleEdit() {
+  isEditing = !isEditing;
+  document.body.classList.toggle('editing', isEditing);
+  const btn = document.getElementById('editBtn');
+  const addBtn = document.getElementById('addBtn');
+  
+  if (isEditing) {
+    btn.innerHTML = '💾 Save & View Mode';
+    btn.classList.replace('btn-primary', 'btn-success');
+    addBtn.style.display = 'inline-flex';
+  } else {
+    btn.innerHTML = '✏️ Enter Edit Mode';
+    btn.classList.replace('btn-success', 'btn-primary');
+    addBtn.style.display = 'none';
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(stops));
+  }
+  render();
 }
 
-function addTag(i){
-  const text = prompt('Tag text (e.g. 🍽️ Halal, 🎡 Fun):');
-  if(!text) return;
-  const cls = prompt('Tag type: food / activity / transport / (blank for default)') || '';
-  stops[i].tags.push({text, cls: ['food','activity','transport'].includes(cls)?cls:''});
-  saveStops(); render();
+function addStop() {
+  stops.push({time:"New Time", cost:"RM 0", title:"New Activity", desc:"Description...", commute:"", tags:[]});
+  render();
+  setTimeout(() => {
+    const cards = document.querySelectorAll('.stop-card');
+    cards[cards.length-1].scrollIntoView({behavior:'smooth', block:'center'});
+  }, 50);
 }
 
-function removeTag(i,j){
-  stops[i].tags.splice(j,1); saveStops(); render();
+function del(i) { if(confirm('Delete this stop?')) { stops.splice(i, 1); render(); autoSave(); } }
+function dupe(i) { stops.splice(i + 1, 0, JSON.parse(JSON.stringify(stops[i]))); render(); autoSave(); }
+function move(i, dir) {
+  const ni = i + dir;
+  if(ni < 0 || ni >= stops.length) return;
+  [stops[i], stops[ni]] = [stops[ni], stops[i]];
+  render(); autoSave();
 }
-
-function resetDay(){
-  if(!confirm('Reset Day 1 to default content? Your edits will be lost.')) return;
-  localStorage.removeItem(STORAGE_KEY);
-  loadStops();
+function addTag(i) {
+  const text = prompt('Tag name (e.g. 🍽️ Halal):'); if(!text) return;
+  const cls = prompt('Type (food / activity / transport):') || 'default';
+  stops[i].tags.push({text, cls}); render(); autoSave();
 }
-
-loadStops();
+function removeTag(i, j) { stops[i].tags.splice(j, 1); render(); autoSave(); }
+function resetDay() {
+  if(confirm('Reset Day 1 to defaults? Your edits will be lost.')) {
+    stops = JSON.parse(JSON.stringify(DEFAULT_STOPS));
+    localStorage.removeItem(STORAGE_KEY); render(); autoSave();
+  }
+}
+init();
 </script>
 </body>
 </html>
