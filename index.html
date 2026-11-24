@@ -3,128 +3,119 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Phu Quoc 4D3N · Home</title>
-<link rel="stylesheet" href="styles.css">
+<title>Phu Quoc 4D3N · Travel Itinerary</title>
+<link rel="stylesheet" href="style.css">
 <style>
-  .home-wrap{max-width:980px;margin:0 auto;padding:0 20px}
-  .day-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:18px;margin-top:28px}
-  .day-card{background:#fff;border-radius:18px;padding:24px 22px;
-    box-shadow:0 8px 26px rgba(10,77,104,.1);border-top:5px solid var(--aqua);
-    text-decoration:none;color:var(--ink);transition:.25s;display:block}
-  .day-card:hover{transform:translateY(-5px);box-shadow:0 14px 34px rgba(10,77,104,.16)}
-  .day-card .num{font-size:.78rem;font-weight:700;color:var(--coral);
-    letter-spacing:1px;text-transform:uppercase}
-  .day-card h3{font-size:1.12rem;margin:6px 0 8px;color:var(--ocean)}
-  .day-card p{font-size:.85rem;color:var(--muted);line-height:1.5}
-  .day-card .cost{display:inline-block;margin-top:12px;background:#eafaf0;
-    color:var(--green);font-weight:700;font-size:.78rem;padding:4px 12px;border-radius:14px}
-  .info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:16px;margin-top:32px}
-  .info-card{background:#fff;border-radius:16px;padding:18px 20px;
-    box-shadow:0 6px 20px rgba(10,77,104,.08);border-top:4px solid var(--aqua)}
-  .info-card h4{font-size:.95rem;color:var(--ocean);margin-bottom:8px}
-  .info-card ul{list-style:none;font-size:.84rem;color:var(--muted);line-height:1.7}
-  .info-card li{padding-left:14px;position:relative}
-  .info-card li::before{content:"•";position:absolute;left:0;color:var(--aqua);font-weight:700}
+  .hero { background-image: url('https://images.unsplash.com/photo-1540202404-a2f29bcb922e?q=80&w=2000&auto=format&fit=crop'); }
+  .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 30px; }
+  .day-link {
+    background: white; border-radius: 20px; padding: 30px; text-decoration: none;
+    color: var(--text); box-shadow: var(--shadow-sm); transition: all 0.3s ease;
+    border: 1px solid #e2e8f0; position: relative; overflow: hidden;
+  }
+  .day-link:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--accent); }
+  .day-link::before {
+    content: ''; position: absolute; top: 0; left: 0; width: 6px; height: 100%;
+    background: var(--accent); transition: width 0.3s ease;
+  }
+  .day-link:hover::before { width: 100%; opacity: 0.05; }
+  .day-link span { font-size: 0.85rem; font-weight: 800; color: var(--secondary); text-transform: uppercase; letter-spacing: 1px; }
+  .day-link h3 { font-size: 1.4rem; margin: 8px 0; color: var(--primary); }
+  .day-link p { color: var(--text-light); font-size: 0.95rem; }
+  .day-link .cost-badge { display: inline-block; margin-top: 15px; background: #ecfdf5; color: var(--success); font-weight: 700; padding: 6px 14px; border-radius: 20px; font-size: 0.9rem; }
+  .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 40px; }
+  .info-box { background: white; padding: 24px; border-radius: 20px; box-shadow: var(--shadow-sm); border-top: 4px solid var(--secondary); }
+  .info-box h4 { color: var(--primary); font-size: 1.1rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .info-box ul { list-style: none; }
+  .info-box li { color: var(--text-light); font-size: 0.9rem; margin-bottom: 8px; padding-left: 20px; position: relative; }
+  .info-box li::before { content: '📍'; position: absolute; left: 0; font-size: 0.8rem; }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>Phu Quoc 4D3N Itinerary</h1>
-  <p>28 Nov – 01 Dec 2026 · The Sol House, Grand World</p>
-  <div class="badge-row">
-    <span class="badge">✈️ AirAsia KUL–PQC</span>
-    <span class="badge">🏨 The Sol House</span>
-    <span class="badge">👨‍👩‍👧 Family Trip</span>
-    <span class="badge">🕌 Halal-friendly</span>
+<div class="hero">
+  <div class="hero-content">
+    <span class="hero-badge">28 Nov – 01 Dec 2026</span>
+    <h1>Phu Quoc 4D3N</h1>
+    <p>The Sol House, Grand World · Family Getaway</p>
   </div>
-</header>
+</div>
 
-<div class="home-wrap">
-  <div class="day-cards">
-    <a class="day-card" href="day1.html">
-      <span class="num">Day 1 · 28 Nov</span>
-      <h3>Travel &amp; Grand World</h3>
-      <p>KLIA T2 → Phu Quoc → check-in → Venice taxi → Grand World dinner.</p>
-      <span class="cost">RM 310</span>
+<nav class="nav-container">
+  <div class="nav-bar">
+    <a href="index.html" class="active">Home</a>
+    <a href="day1.html">Day 1</a>
+    <a href="day2.html">Day 2</a>
+    <a href="day3.html">Day 3</a>
+    <a href="day4.html">Day 4</a>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="page-header">
+    <div class="page-title">
+      <h2>Your Journey Starts Here</h2>
+      <p>Click on a day to view the detailed itinerary</p>
+    </div>
+  </div>
+
+  <div class="dashboard">
+    <a href="day1.html" class="day-link">
+      <span>Day 1 · 28 Nov</span>
+      <h3>Travel & Grand World</h3>
+      <p>Fly from KUL to PQC. Check in at The Sol House and explore the Venice-style Grand World.</p>
+      <div class="cost-badge">Est. RM 310</div>
     </a>
-    <a class="day-card" href="day2.html">
-      <span class="num">Day 2 · 29 Nov</span>
-      <h3>Sunset Town &amp; Cable Car</h3>
-      <p>Hon Thom cable car, Aquatopia, Sarah Halal lunch, Sunset Town walk.</p>
-      <span class="cost">RM 1,054.70</span>
+    <a href="day2.html" class="day-link">
+      <span>Day 2 · 29 Nov</span>
+      <h3>Cable Car & Sunset Town</h3>
+      <p>Ride the world's longest cable car to Hon Thom, then explore the Mediterranean vibes of Sunset Town.</p>
+      <div class="cost-badge">Est. RM 1,054.70</div>
     </a>
-    <a class="day-card" href="day3.html">
-      <span class="num">Day 3 · 30 Nov</span>
-      <h3>VinWonders Full Day</h3>
-      <p>Fantasy World, Viking Village, Aquarium, ONCE show &amp; fireworks.</p>
-      <span class="cost">RM 380</span>
+    <a href="day3.html" class="day-link">
+      <span>Day 3 · 30 Nov</span>
+      <h3>VinWonders Theme Park</h3>
+      <p>A full day of fun at VinWonders: Aquarium, Thrill Rides, and the spectacular "ONCE" show.</p>
+      <div class="cost-badge">Est. RM 380</div>
     </a>
-    <a class="day-card" href="day4.html">
-      <span class="num">Day 4 · 01 Dec</span>
+    <a href="day4.html" class="day-link">
+      <span>Day 4 · 01 Dec</span>
       <h3>Departure</h3>
-      <p>Check-out, PQC airport, flight home to KUL.</p>
-      <span class="cost">RM 150</span>
+      <p>Early check-out and a smooth flight back to Kuala Lumpur.</p>
+      <div class="cost-badge">Est. RM 150</div>
     </a>
   </div>
 
   <div class="info-grid">
-    <div class="info-card">
-      <h4>🏨 Hotel</h4>
+    <div class="info-box">
+      <h4>🏨 Accommodation</h4>
       <ul>
         <li>The Sol House Phu Quoc</li>
         <li>VH06, 32 Địa Trung Hải 3, Grand World</li>
-        <li>Phú Quốc, An Giang, Vietnam 922251</li>
+        <li>Phú Quốc, An Giang, Vietnam</li>
         <li>☎️ 84-788754538</li>
       </ul>
     </div>
-    <div class="info-card">
-      <h4>🕌 Halal Food (Near Grand World)</h4>
+    <div class="info-box">
+      <h4>🕌 Halal Food Nearby</h4>
       <ul>
-        <li>Halal Venice Restaurant — 1.3 km</li>
-        <li>IKUSACHI Sushi — 1.2 km</li>
-        <li>BMAY Restaurant — 1.2 km</li>
-        <li>Halal Restaurant Afandy — 3.5 km</li>
+        <li>Halal Venice Restaurant (1.3 km)</li>
+        <li>Sarah Halal Restaurant (Sunset Town)</li>
+        <li>BMAY Restaurant (1.2 km)</li>
+        <li>Halal Restaurant Afandy (3.5 km)</li>
       </ul>
     </div>
-    <div class="info-card">
-      <h4>🕌 Halal Food (Near Sunset Town)</h4>
+    <div class="info-box">
+      <h4>📋 Pre-Flight Checklist</h4>
       <ul>
-        <li>Sarah Hotel &amp; Halal Restaurant — 300 m</li>
-        <li>Halal Sunset Town — 1.7 km</li>
-        <li>Farah Steak Bistro — 1.8 km</li>
-      </ul>
-    </div>
-    <div class="info-card">
-      <h4>📋 Before You Fly</h4>
-      <ul>
-        <li>Fill arrival form 3 days before flight</li>
-        <li>prearrival.immigration.gov.vn</li>
+        <li>Fill arrival form (prearrival.immigration.gov.vn)</li>
         <li>Link Malaysian credit card to Grab</li>
-        <li>Chat hotel re: airport transfer</li>
-      </ul>
-    </div>
-    <div class="info-card">
-      <h4>💰 Budget Summary</h4>
-      <ul>
-        <li>Activities: <b>RM 1,894.70</b></li>
-        <li>Hotel &amp; flight (40kg × 2): <b>RM 2,718.75</b></li>
-        <li>RTE Food (Kembara): <b>RM 100</b></li>
-        <li><b>Total: RM 4,713.45</b></li>
-      </ul>
-    </div>
-    <div class="info-card">
-      <h4>📱 eSIM</h4>
-      <ul>
-        <li>iPhone — install eSIM before departure</li>
-        <li>Rate: 1 MYR = 6,364.78 VND</li>
+        <li>Chat hotel for airport transfer</li>
+        <li>Install eSIM for iPhone</li>
       </ul>
     </div>
   </div>
 </div>
 
-<footer>Phu Quoc 4D3N · 28 Nov – 01 Dec 2026 · The Sol House, Grand World</footer>
 </body>
 </html>
